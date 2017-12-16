@@ -162,6 +162,14 @@ const hexadecimalToRGB = hex => {
   return `rgb(${r},${g},${b})`
 }
 
+// https://github.com/rstacruz/cheatsheets/blob/master/js-speech.md 
+const pronounceColorName = message => {
+  let msg = new SpeechSynthesisUtterance(message)
+  let voices = window.speechSynthesis.getVoices()
+  msg.voice = voices[0]
+  window.speechSynthesis.speak(msg)
+}
+
 let nameAndHexaAndHSLMatrix = nameAndHexaAndHSL
   .split('\n')
   .map(line => line.trim().split(' '))
@@ -178,6 +186,7 @@ let nameAndHexaAndHSLMatrix = nameAndHexaAndHSL
     const nameRGBContainer = document.createElement('span')
 
     box.classList.add('box-color')
+    box.setAttribute('title', 'Click to find more informations')
     divContainer.appendChild(box)
 
     box.appendChild(nameColorContainer)
@@ -190,9 +199,9 @@ let nameAndHexaAndHSLMatrix = nameAndHexaAndHSL
     nameHSLContainer.innerText = arrayOfValues[2]
     nameRGBContainer.innerText = arrayOfValues[3]
 
-    box.addEventListener('mouseenter', function (event) {
-      event.target.style.backgroundColor = arrayOfValues[1]
-      /* Todo: pronounce the name of the color*/
+    box.addEventListener('click', function () {
+      this.style.backgroundColor = arrayOfValues[1]
+      pronounceColorName(arrayOfValues[0])
     })
     box.addEventListener('mouseleave', function (event) {
       event.target.style.backgroundColor = ''
