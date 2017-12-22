@@ -1,11 +1,39 @@
-let divContainer = document.createElement('div')
-let colorContainer = document.createElement('div')
-divContainer.classList.add('container')
-colorContainer.classList.add('color-box')
-document.body.appendChild(divContainer)
+let allColorsContainer = document.createElement('div')
+let singleColorContainer = document.createElement('div')
+let selectInput = document.createElement('select')
+
+let optionsArray = [
+  'red', 
+  'pink', 
+  'orange', 
+  'yellow', 
+  'purple', 
+  'green', 
+  'blue', 
+  'brown', 
+  'white', 
+  'gray', 
+  'Show me a JSON-like with all the colors'
+]
+
+optionsArray.forEach((currentValue, index) => {
+  let option = document.createElement('option')
+  selectInput.appendChild(option)
+  option.text = `show only ${currentValue} shades`.toUpperCase()
+  option.value = currentValue
+  if (index === optionsArray.length - 1) {
+    option.text = currentValue.toUpperCase()
+    option.value = 'json'
+  }
+})
+
+allColorsContainer.classList.add('container')
+singleColorContainer.classList.add('color-box')
+document.body.appendChild(selectInput)
+document.body.appendChild(allColorsContainer)
 
 // https://github.com/bahamas10/css-color-names/blob/master/getcolors.sh
-let nameAndHexaAndHSL = 
+let scrappedData = 
   `aliceblue #f0f8ff hsl(208,100%,97%)
   antiquewhite #faebd7 hsl(34,77%,91%)
   aqua #00ffff hsl(180,100%,50%)
@@ -170,45 +198,53 @@ const pronounceColorName = message => {
   window.speechSynthesis.speak(msg)
 }
 
-let nameAndHexaAndHSLMatrix = nameAndHexaAndHSL
+let completeMatrix = scrappedData
   .split('\n')
   .map(line => line.trim().split(' '))
-  .map(nameAndHexaAndHSLarray => {
-    let hexadecimalValue = nameAndHexaAndHSLarray.slice(1, 2)[0]
-    nameAndHexaAndHSLarray.push(hexadecimalToRGB(hexadecimalValue))
-    return nameAndHexaAndHSLarray
-  })
-  .map(arrayOfValues => {
-    const box = document.createElement('div')
-    const nameColorContainer = document.createElement('span')
-    const nameHexadecimalContainer = document.createElement('span')
-    const nameHSLContainer = document.createElement('span')
-    const nameRGBContainer = document.createElement('span')
-
-    box.classList.add('box-color')
-    box.setAttribute('title', 'Click to find more informations')
-    divContainer.appendChild(box)
-
-    box.appendChild(nameColorContainer)
-    box.appendChild(nameHexadecimalContainer)
-    box.appendChild(nameHSLContainer)
-    box.appendChild(nameRGBContainer)
-
-    nameColorContainer.innerText = arrayOfValues[0]
-    nameHexadecimalContainer.innerText = arrayOfValues[1]
-    nameHSLContainer.innerText = arrayOfValues[2]
-    nameRGBContainer.innerText = arrayOfValues[3]
-
-    box.addEventListener('click', function () {
-      this.style.backgroundColor = arrayOfValues[1]
-      pronounceColorName(arrayOfValues[0])
-    })
-    box.addEventListener('mouseleave', function (event) {
-      event.target.style.backgroundColor = ''
-    })
+  .map(rowOfValues => {
+    let hexadecimalValue = rowOfValues.slice(1, 2)[0]
+    rowOfValues.push(hexadecimalToRGB(hexadecimalValue))
+    return rowOfValues
   })
 
-  /*
-  Todo: filter the boxes by their base color.
-  Example -  http://htmlcolorcodes.com/color-names/
-  */
+completeMatrix.map(colorValues => {
+  const box = document.createElement('div')
+  const namesingleColorContainer = document.createElement('span')
+  const nameHexadecimalContainer = document.createElement('span')
+  const nameHSLContainer = document.createElement('span')
+  const nameRGBContainer = document.createElement('span')
+
+  box.classList.add('box-color')
+  box.setAttribute('title', 'Click to find more informations')
+  allColorsContainer.appendChild(box)
+
+  box.appendChild(namesingleColorContainer)
+  box.appendChild(nameHexadecimalContainer)
+  box.appendChild(nameHSLContainer)
+  box.appendChild(nameRGBContainer)
+
+  namesingleColorContainer.innerText = colorValues[0]
+  nameHexadecimalContainer.innerText = colorValues[1]
+  nameHSLContainer.innerText = colorValues[2]
+  nameRGBContainer.innerText = colorValues[3]
+
+  box.addEventListener('click', function () {
+    this.style.backgroundColor = colorValues[1]
+    pronounceColorName(colorValues[0])
+  })
+  box.addEventListener('mouseleave', function (event) {
+    event.target.style.backgroundColor = ''
+  })
+})
+
+let matrixToJson = JSON.stringify(completeMatrix, null, '  ')
+selectInput.addEventListener('change', (e) => {
+  if (e.target.value === 'json') {
+    allColorsContainer.innerText = ''
+    allColorsContainer.innerHTML = `<pre>${matrixToJson}</pre>`
+  }
+})
+/*
+Todo: filter the boxes by their base color.
+Example -  http://htmlcolorcodes.com/color-names/
+*/
