@@ -29,9 +29,9 @@ select {
 
 .box-color {
   text-align: center;
-  width: 20%;
+  flex-grow: 1;
   padding: 5px;
-  cursor: pointer;
+  cursor: crosshair;
   border-right: 2px dashed black;
   border-bottom: 2px dashed black;
   transition-property: font-size;
@@ -44,7 +44,7 @@ select {
 }
 
 .box-color:hover {
-  width: 22%;
+  flex-basis: 22%;
   font-size: 36px;
 }
 
