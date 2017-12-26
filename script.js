@@ -3,6 +3,7 @@ let singleColorContainer = document.createElement('div')
 let selectInput = document.createElement('select')
 
 let optionsArray = [
+  'show what?',
   'red', 
   'pink', 
   'orange', 
@@ -21,6 +22,9 @@ optionsArray.forEach((currentValue, index) => {
   selectInput.appendChild(option)
   option.text = `show only ${currentValue} shades`.toUpperCase()
   option.value = currentValue
+  if (index === 0) {
+    option.text = currentValue.toUpperCase()
+  }
   if (index === optionsArray.length - 1) {
     option.text = currentValue.toUpperCase()
     option.value = 'json'
@@ -207,44 +211,100 @@ let completeMatrix = scrappedData
     return rowOfValues
   })
 
-completeMatrix.map(colorValues => {
-  const box = document.createElement('div')
-  const namesingleColorContainer = document.createElement('span')
-  const nameHexadecimalContainer = document.createElement('span')
-  const nameHSLContainer = document.createElement('span')
-  const nameRGBContainer = document.createElement('span')
-
-  box.classList.add('box-color')
-  box.setAttribute('title', 'Click to find more informations')
-  allColorsContainer.appendChild(box)
-
-  box.appendChild(namesingleColorContainer)
-  box.appendChild(nameHexadecimalContainer)
-  box.appendChild(nameHSLContainer)
-  box.appendChild(nameRGBContainer)
-
-  namesingleColorContainer.innerText = colorValues[0]
-  nameHexadecimalContainer.innerText = colorValues[1]
-  nameHSLContainer.innerText = colorValues[2]
-  nameRGBContainer.innerText = colorValues[3]
-
-  box.addEventListener('click', function () {
-    this.style.backgroundColor = colorValues[1]
-    pronounceColorName(colorValues[0])
+let defaultState = () => {
+  completeMatrix.map(colorValues => {
+    const box = document.createElement('div')
+    const nameContainer = document.createElement('span')
+    const nameHexContainer = document.createElement('span')
+    const nameHSLContainer = document.createElement('span')
+    const nameRGBContainer = document.createElement('span')
+  
+    box.classList.add('box-color')
+    box.setAttribute('title', 'Click to find more informations')
+    box.setAttribute('data-hex-name', colorValues[1])
+    allColorsContainer.appendChild(box)
+  
+    box.appendChild(nameContainer)
+    box.appendChild(nameHexContainer)
+    box.appendChild(nameHSLContainer)
+    box.appendChild(nameRGBContainer)
+  
+    nameContainer.innerText = colorValues[0]
+    nameHexContainer.innerText = colorValues[1]
+    nameHSLContainer.innerText = colorValues[2]
+    nameRGBContainer.innerText = colorValues[3]
+  
+    box.addEventListener('click', function () {
+      this.style.backgroundColor = colorValues[1]
+      pronounceColorName(colorValues[0])
+    })
+    box.addEventListener('mouseleave', function (event) {
+      event.target.style.backgroundColor = ''
+    })
   })
-  box.addEventListener('mouseleave', function (event) {
-    event.target.style.backgroundColor = ''
-  })
-})
+}
 
+defaultState()
+
+let isThisColor = arrayOfHexColors => {
+  [...document.getElementsByClassName('box-color')].map(e => {
+    if (arrayOfHexColors.indexOf(e.dataset.hexName) === -1) {
+      e.classList.add('none')
+    }
+  })
+}
+
+// http://htmlcolorcodes.com/color-names/ 
+let redShade = ["#cd5c5c", "#f08080", "#fa8072", "#e9967a", "#ffa07a", "#dc143c", "#ff0000", "#b22222", "#8b0000"]
+let pinkShade = ["#ffc0cb", "#ffb6c1", "#ff69b4", "#ff1493", "#c71585", "#db7093"]
+let orangeShade = ["#ffa07a", "#ff7f50", "#ff6347", "#ff4500", "#ff8c00", "#ffa500"]
+let yellowShade = ["#ffd700", "#ffff00", "#ffffe0", "#fffacd", "#fafad2", "#ffefd5", "#ffe4b5", "#ffdab9", "#eee8aa", "#f0e68c", "#bdb76b"]
+let purpleShade = ["#e6e6fa", "#d8bfd8", "#dda0dd", "#ee82ee", "#da70d6", "#ff00ff", "#ff00ff", "#ba55d3", "#9370db", "#663399", "#8a2be2", "#9400d3", "#9932cc", "#8b008b", "#800080", "#4b0082", "#6a5acd", "#483d8b", "#7b68ee"]
+let greenShade = ["#adff2f", "#7fff00", "#7cfc00", "#00ff00", "#32cd32", "#98fb98", "#90ee90", "#00fa9a", "#00ff7f", "#3cb371", "#2e8b57", "#228b22", "#008000", "#006400", "#9acd32", "#6b8e23", "#808000", "#556b2f", "#66cdaa", "#8fbc8b", "#20b2aa", "#008b8b", "#008080"]
+let blueShade = ["#00ffff", "#00ffff", "#e0ffff", "#afeeee", "#7fffd4", "#40e0d0", "#48d1cc", "#00ced1", "#5f9ea0", "#4682b4", "#b0c4de", "#b0e0e6", "#add8e6", "#87ceeb", "#87cefa", "#00bfff", "#1e90ff", "#6495ed", "#7b68ee", "#4169e1", "#0000ff", "#0000cd", "#00008b", "#000080", "#191970"]
+let brownShade = ["#fff8dc", "#ffebcd", "#ffe4c4", "#ffdead", "#f5deb3", "#deb887", "#d2b48c", "#bc8f8f", "#f4a460", "#daa520", "#b8860b", "#cd853f", "#d2691e", "#8b4513", "#a0522d", "#a52a2a", "#800000"]
+let whiteShade = ["#ffffff", "#fffafa", "#f0fff0", "#f5fffa", "#f0ffff", "#f0f8ff", "#f8f8ff", "#f5f5f5", "#fff5ee", "#f5f5dc", "#fdf5e6", "#fffaf0", "#fffff0", "#faebd7", "#faf0e6", "#fff0f5", "#ffe4e1"]
+let grayShade = ["#dcdcdc", "#d3d3d3", "#c0c0c0", "#a9a9a9", "#808080", "#696969", "#778899", "#708090", "#2f4f4f", "#000000"]
 let matrixToJson = JSON.stringify(completeMatrix, null, '  ')
-selectInput.addEventListener('change', (e) => {
-  if (e.target.value === 'json') {
-    allColorsContainer.innerText = ''
-    allColorsContainer.innerHTML = `<pre>${matrixToJson}</pre>`
+
+selectInput.addEventListener('change', e => {
+  defaultState()
+  switch (e.target.value) {
+    case 'red':
+      isThisColor(redShade)
+      break
+    case 'pink':
+      isThisColor(pinkShade)
+      break
+    case 'orange':
+      isThisColor(orangeShade)
+      break
+    case 'yellow':
+      isThisColor(yellowShade)
+      break
+    case 'purple':
+      isThisColor(purpleShade)
+      break
+    case 'green':
+      isThisColor(greenShade)
+      break
+    case 'blue':
+      isThisColor(blueShade)
+      break
+    case 'brown':
+      isThisColor(brownShade)
+      break
+    case 'white':
+      isThisColor(whiteShade)
+      break
+    case 'gray':
+      isThisColor(grayShade)
+      break
+    case 'json':
+      allColorsContainer.innerText = ''
+      allColorsContainer.innerHTML = `<pre>${matrixToJson}</pre>`
+      break
+    default:
+      return
   }
 })
-/*
-Todo: filter the boxes by their base color.
-Example -  http://htmlcolorcodes.com/color-names/
-*/

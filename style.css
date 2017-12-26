@@ -20,8 +20,12 @@ select {
   width: 100%;
 }
 
+select {
+  position: fixed;
+}
 .container {
   margin: 0 auto;
+  padding-top: 36px;
   display: flex;
   flex-flow: row wrap;
   justify-content: start;
@@ -50,4 +54,8 @@ select {
 
 span {
   display: block;
+}
+
+.none {
+  display: none;
 }
