@@ -31,8 +31,9 @@ optionsArray.forEach((currentValue, index) => {
   }
 })
 
-allColorsContainer.classList.add('container')
+allColorsContainer.classList.add('all-box')
 singleColorContainer.classList.add('color-box')
+
 document.body.appendChild(selectInput)
 document.body.appendChild(allColorsContainer)
 
@@ -252,6 +253,9 @@ let isThisColor = arrayOfHexColors => {
       e.classList.add('none')
     }
   })
+  document.querySelector('.json-box').style.visibility = 'hidden'
+  document.querySelector('.all-box').style.visibility = 'visible'
+  window.scroll(0, 0)
 }
 
 // http://htmlcolorcodes.com/color-names/ 
@@ -301,10 +305,16 @@ selectInput.addEventListener('change', e => {
       isThisColor(grayShade)
       break
     case 'json':
-      allColorsContainer.innerText = ''
-      allColorsContainer.innerHTML = `<pre>${matrixToJson}</pre>`
+      document.querySelector('.all-box').style.visibility = 'hidden'
+      document.querySelector('.json-box').style.visibility = 'visible'
       break
     default:
-      return
-  }
-})
+      window.location.reload()
+    }
+  })
+  
+  let jsonContainer = document.createElement('div')
+  jsonContainer.classList.add('json-box')
+  document.body.appendChild(jsonContainer)
+  jsonContainer.innerHTML = `<pre>${matrixToJson}</pre>`
+  document.querySelector('.json-box').style.visibility = 'hidden'

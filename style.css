@@ -7,6 +7,7 @@ select {
 /* https://www.paulirish.com/2012/box-sizing-border-box-ftw/ */
 html {
   box-sizing: border-box;
+  font-size: 62.5%;
 }
 
 *,
@@ -15,41 +16,47 @@ html {
   box-sizing: inherit;
 }
 
-.container,
+.all-box,
 select {
   width: 100%;
 }
 
 select {
   position: fixed;
+  z-index: 3;
 }
-.container {
+.all-box {
   margin: 0 auto;
-  padding-top: 36px;
+  padding-top: 2.25rem;
   display: flex;
   flex-flow: row wrap;
   justify-content: start;
 }
-
+.json-box {
+  position: absolute;
+  top: 2.25rem;
+  z-index: 2;
+}
 .box-color {
   text-align: center;
   flex-grow: 1;
   padding: 5px;
   cursor: crosshair;
-  border-right: 2px dashed black;
-  border-bottom: 2px dashed black;
+  border-right: 1px dashed black;
+  border-bottom: 1px dashed black;
   transition-property: font-size;
   transition-duration: .8s;
 }
 
 .box-color,
-select {
-  font-size: 24px;
+select,
+.json-box {
+  font-size: 1.5rem;
 }
 
 .box-color:hover {
   flex-basis: 22%;
-  font-size: 36px;
+  font-size: 2.25rem;
 }
 
 span {
