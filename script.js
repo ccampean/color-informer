@@ -212,40 +212,36 @@ let completeMatrix = scrappedData
     return rowOfValues
   })
 
-let defaultState = () => {
-  completeMatrix.map(colorValues => {
-    const box = document.createElement('div')
-    const nameContainer = document.createElement('span')
-    const nameHexContainer = document.createElement('span')
-    const nameHSLContainer = document.createElement('span')
-    const nameRGBContainer = document.createElement('span')
-  
-    box.classList.add('box-color')
-    box.setAttribute('title', 'Click to find more informations')
-    box.setAttribute('data-hex-name', colorValues[1])
-    allColorsContainer.appendChild(box)
-  
-    box.appendChild(nameContainer)
-    box.appendChild(nameHexContainer)
-    box.appendChild(nameHSLContainer)
-    box.appendChild(nameRGBContainer)
-  
-    nameContainer.innerText = colorValues[0]
-    nameHexContainer.innerText = colorValues[1]
-    nameHSLContainer.innerText = colorValues[2]
-    nameRGBContainer.innerText = colorValues[3]
-  
-    box.addEventListener('click', function () {
-      this.style.backgroundColor = colorValues[1]
-      pronounceColorName(colorValues[0])
-    })
-    box.addEventListener('mouseleave', function (event) {
-      event.target.style.backgroundColor = ''
-    })
-  })
-}
+completeMatrix.map(colorValues => {
+  const box = document.createElement('div')
+  const nameContainer = document.createElement('span')
+  const nameHexContainer = document.createElement('span')
+  const nameHSLContainer = document.createElement('span')
+  const nameRGBContainer = document.createElement('span')
 
-defaultState()
+  box.classList.add('box-color')
+  box.setAttribute('title', 'Click to hear the name of the color')
+  box.setAttribute('data-hex-name', colorValues[1])
+  allColorsContainer.appendChild(box)
+
+  box.appendChild(nameContainer)
+  box.appendChild(nameHexContainer)
+  box.appendChild(nameHSLContainer)
+  box.appendChild(nameRGBContainer)
+
+  nameContainer.innerText = colorValues[0]
+  nameHexContainer.innerText = colorValues[1]
+  nameHSLContainer.innerText = colorValues[2]
+  nameRGBContainer.innerText = colorValues[3]
+
+  box.addEventListener('click', function () {
+    this.style.backgroundColor = colorValues[1]
+    pronounceColorName(colorValues[0])
+  })
+  box.addEventListener('mouseleave', function (event) {
+    event.target.style.backgroundColor = ''
+  })
+})
 
 let isThisColor = arrayOfHexColors => {
   [...document.getElementsByClassName('box-color')].map(e => {
@@ -272,7 +268,6 @@ let grayShade = ["#dcdcdc", "#d3d3d3", "#c0c0c0", "#a9a9a9", "#808080", "#696969
 let matrixToJson = JSON.stringify(completeMatrix, null, '  ')
 
 selectInput.addEventListener('change', e => {
-  defaultState()
   switch (e.target.value) {
     case 'red':
       isThisColor(redShade)
@@ -307,6 +302,7 @@ selectInput.addEventListener('change', e => {
     case 'json':
       document.querySelector('.all-box').style.visibility = 'hidden'
       document.querySelector('.json-box').style.visibility = 'visible'
+      window.scroll(0, 0)
       break
     default:
       window.location.reload()
