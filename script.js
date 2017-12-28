@@ -24,6 +24,7 @@ optionsArray.forEach((currentValue, index) => {
   option.value = currentValue
   if (index === 0) {
     option.text = currentValue.toUpperCase()
+    option.setAttribute('selected', 'selected')
   }
   if (index === optionsArray.length - 1) {
     option.text = currentValue.toUpperCase()
@@ -251,7 +252,6 @@ let isThisColor = arrayOfHexColors => {
   })
   document.querySelector('.json-box').style.visibility = 'hidden'
   document.querySelector('.all-box').style.visibility = 'visible'
-  window.scroll(0, 0)
 }
 
 // http://htmlcolorcodes.com/color-names/ 
@@ -268,6 +268,7 @@ let grayShade = ["#dcdcdc", "#d3d3d3", "#c0c0c0", "#a9a9a9", "#808080", "#696969
 let matrixToJson = JSON.stringify(completeMatrix, null, '  ')
 
 selectInput.addEventListener('change', e => {
+  [...document.getElementsByClassName('box-color')].map(box => box.classList.remove('none'))
   switch (e.target.value) {
     case 'red':
       isThisColor(redShade)
@@ -302,11 +303,11 @@ selectInput.addEventListener('change', e => {
     case 'json':
       document.querySelector('.all-box').style.visibility = 'hidden'
       document.querySelector('.json-box').style.visibility = 'visible'
-      window.scroll(0, 0)
       break
     default:
-      window.location.reload()
+      window.location.reload(true)
     }
+    window.scroll(0, 0)
   })
   
   let jsonContainer = document.createElement('div')
